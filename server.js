@@ -50,7 +50,7 @@ const { Server } = require('socket.io');
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "https://anshu0a-insta.netlify.app",
+        origin: "https://insta-anshu0o.netlify.app/",
         methods: ["GET", "POST"],
     },
 });
@@ -113,7 +113,7 @@ cstore.on("error", (err) => {
 //_______________________________________________________________________________________________________________________
 
 const corsOprtions = {
-    origin: "https://anshu0a-insta.netlify.app",
+    origin: "https://insta-anshu0o.netlify.app/",
     credentials: true,
 };
 
@@ -152,7 +152,7 @@ passport.deserializeUser(User.deserializeUser());
 
 
 //_______________________________________________________________login _______________________________-
-app.post("/checkUser", loginUser);
+app.post("/checkUser", loginUser);  
 app.post("/askforuserid", askUserinfo);
 //_______________________________________________________________logout _______________________________-
 app.post("/logoutuser", logoutUser);
