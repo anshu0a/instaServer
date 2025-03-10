@@ -112,25 +112,35 @@ cstore.on("error", (err) => {
 
 //_______________________________________________________________________________________________________________________
 
-const corsOprtions = {
-    origin: "https://insta-b9i6.onrender.com",
+
+const corsOptions = {
+    origin: "https://insta-b9i6.onrender.com", 
     credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
 };
 
+app.use(cors(corsOptions));
+app.set("trust proxy", 1);
+
 const sessionOptions = {
-    store: cstore,
+    store: MongoStore.create({
+        mongoUrl: process.env.ATLAS, // Your MongoDB URI
+        crypto: { secret: process.env.SECRET },
+        touchAfter: 24 * 3600, // Reduce session updates
+    }),
     secret: process.env.SECRET,
     resave: false,
-    saveUninitialized: false, 
+    saveUninitialized: false,
     cookie: {
-        secure: true, 
+        secure: true, // HTTPS required
         httpOnly: true,
-        sameSite: "none", 
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+        sameSite: "none", // Required for cross-origin requests
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     },
 };
 //__________________________________________________________________________________________________________________
-app.use(cors(corsOprtions));
+
 app.use(express.json());
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs")
@@ -149,6 +159,18 @@ app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+// ______________________________________________________middleware _____________________________________________-
+
+app.use((req, res, next) => {
+    console.log("Session Data:", req.session);
+    console.log("User Data:", req.user);
+    next();
+});
+app.get("/check-session", (req, res) => {
+    console.log("Session:", req.session);
+    console.log("User:", req.user);
+    res.send(req.isAuthenticated() ? "Authenticated" : "Not Authenticated");
+});
 
 
 //_______________________________________________________________login _______________________________-
