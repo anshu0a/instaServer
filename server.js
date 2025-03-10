@@ -41,6 +41,85 @@ const { searchusrmforgot, forgotpassword } = require("./routes/forgot.js");
 const { fetchlink, deletelink, editlink, showlinks } = require("./routes/link.js");
 const { fetchclose, addclosefrnd, hidelist, addhidelist, addstory, fetchStory, seenmystory, likemystory, addcmtinstory, fetchcmtinstory, fetchviewsinstory, deletestory } = require("./routes/story.js");
 
+
+
+
+//____________________________________________________________________________________________________________
+
+const monurl = process.env.ATLAS;
+const main = async function () {
+    await mongo.connect(monurl);
+};
+main()
+    .then(() => console.log("Mongoose connected..."))
+    .catch((er) => console.log("Mongoose error: " + er));
+
+const cstore = MongoStore.create({
+    mongoUrl: monurl,
+    crypto: {
+        secret: process.env.SECRET,
+    },
+    touchAfter: 24 * 3600,
+});
+cstore.on("error", (err) => {
+    console.log("ErroR iN MONGO sTORE : ", err);
+});
+
+//_______________________________________________________________________________________________________________________
+
+
+const corsOptions = {
+    origin: [
+        "https://insta-theta-blond.vercel.app",
+        "http://localhost:5173"
+    ],
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
+app.set("trust proxy", 1);
+
+
+const sessionOptions = {
+    store: MongoStore.create({
+        mongoUrl: process.env.ATLAS,
+        crypto: { secret: process.env.SECRET },
+        touchAfter: 24 * 3600,
+    }),
+    secret: process.env.SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: true,
+        httpOnly: true,
+        sameSite: "none",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+    },
+};
+//__________________________________________________________________________________________________________________
+
+app.use(express.json());
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs")
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(session(sessionOptions));
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send({ message: err.message, color: "red" });
+});
+
+
+//_________________________________________________________________________________________________________
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 //____________________________________________________________________________soket ____________________________________________
 
 const onlineUser = [];
@@ -49,10 +128,7 @@ const { Server } = require('socket.io');
 
 const server = http.createServer(app);
 const io = new Server(server, {
-    cors: {
-        origin: ["https://insta-b9i6.onrender.com", "http://localhost:5173", "https://insta-theta-blond.vercel.app"],
-        methods: ["GET", "POST"],
-    },
+    cors: corsOptions
 });
 
 io.on('connection', (socket) => {
@@ -87,86 +163,6 @@ io.on('connection', (socket) => {
         }
     });
 });
-
-
-//____________________________________________________________________________________________________________
-
-const monurl = process.env.ATLAS;
-const main = async function () {
-    await mongo.connect(monurl);
-};
-main()
-    .then(() => console.log("Mongoose connected..."))
-    .catch((er) => console.log("Mongoose error: " + er));
-
-const cstore = MongoStore.create({
-    mongoUrl: monurl,
-    crypto: {
-        secret: process.env.SECRET,
-    },
-    touchAfter: 24 * 3600,
-});
-cstore.on("error", (err) => {
-    console.log("ErroR iN MONGO sTORE : ", err);
-});
-
-//_______________________________________________________________________________________________________________________
-
-
-const corsOptions = {
-    origin: [
-        "https://insta-b9i6.onrender.com",
-        "http://localhost:5173",
-        "https://insta-theta-blond.vercel.app/"
-    ],
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-};
-
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
-app.set("trust proxy", 1);
-
-
-const sessionOptions = {
-    store: MongoStore.create({
-        mongoUrl: process.env.ATLAS, // Your MongoDB URI
-        crypto: { secret: process.env.SECRET },
-        touchAfter: 24 * 3600, // Reduce session updates
-    }),
-    secret: process.env.SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        secure: true, // HTTPS required
-        httpOnly: true,
-        sameSite: "none", // Required for cross-origin requests
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    },
-};
-//__________________________________________________________________________________________________________________
-
-app.use(express.json());
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "ejs")
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(session(sessionOptions));
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send({ message: err.message, color: "red" });
-});
-
-
-//_________________________________________________________________________________________________________
-
-app.use(passport.initialize());
-app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
-// ______________________________________________________middleware _____________________________________________-
-
 
 //_______________________________________________________________login _______________________________-
 app.post("/checkUser", loginUser);
