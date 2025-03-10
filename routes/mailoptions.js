@@ -62,19 +62,19 @@ module.exports = {
             </div>
             </body>
     `};
-        // try {
-        //     transporter.sendMail(mailOptions, (err, info) => {
-        //         if (err) {
+        try {
+            transporter.sendMail(mailOptions, (err, info) => {
+                if (err) {
 
-        //             console.log("not send otp ______________ :" + err)
-        //             return res.send({ message: "Internal server error", color: "red" });
-        //         }
-        //     });
-        //     return res.send({ message: "Otp send successfully", color: "green", otp: myotp });
-        // } catch (er) {
-        //     console.log(er)
-        //     res.send({ message: "server-side error", color: "red" });
-        // }
+                    console.log("not send otp ______________ :" + err)
+                    return res.send({ message: "Internal server error", color: "red" });
+                }
+            });
+            return res.send({ message: "Otp send successfully", color: "green", otp: myotp });
+        } catch (er) {
+            console.log(er)
+            res.send({ message: "server-side error", color: "red" });
+        }
 
         return res.send({ message: "Otp send successfully", color: "green", otp: myotp });
     }
