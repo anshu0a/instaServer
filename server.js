@@ -142,7 +142,7 @@ const sessionOptions = {
     },
 };
 //__________________________________________________________________________________________________________________
-app.use(express.static(path.join(__dirname, "build"))); 
+
 app.use(express.json());
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs")
@@ -911,15 +911,7 @@ setInterval(cleanUpExpiredEntries, 60 * 60 * 1000);
 //____________________________________________________________last _______________________________-------
 
 
-// Define all API routes BEFORE this!
 
-// Catch-all for React SPA (MUST be after all API routes)
-app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "build", "index.html"));
-});
-
-
-// Global error handler (MUST be last middleware)
 app.use((err, req, res, next) => {
     console.error("Server error:", err);
     res.status(500).send({ message: "Something went wrong", color: "red" });
