@@ -50,7 +50,7 @@ const { Server } = require('socket.io');
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "https://insta-b9i6.onrender.com",
+        origin: ["https://insta-b9i6.onrender.com","http://localhost:5173"],
         methods: ["GET", "POST"],
     },
 });
@@ -114,14 +114,16 @@ cstore.on("error", (err) => {
 
 
 const corsOptions = {
-    origin: "https://insta-b9i6.onrender.com", 
+    origin: ["https://insta-b9i6.onrender.com", "http://localhost:5173"], 
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 };
 
 app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.set("trust proxy", 1);
+
 
 const sessionOptions = {
     store: MongoStore.create({
@@ -140,7 +142,7 @@ const sessionOptions = {
     },
 };
 //__________________________________________________________________________________________________________________
-
+app.use(express.static(path.join(__dirname, "build"))); 
 app.use(express.json());
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs")
@@ -907,12 +909,15 @@ setInterval(cleanUpExpiredEntries, 60 * 60 * 1000);
 
 
 //____________________________________________________________last _______________________________-------
-app.use(express.static(path.join(__dirname, "build"))); // Serve static frontend files
 
-// Catch-all route for React (SPA)
+
+// Define all API routes BEFORE this!
+
+// Catch-all for React SPA (MUST be after all API routes)
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "build", "index.html"));
 });
+
 
 // Global error handler (MUST be last middleware)
 app.use((err, req, res, next) => {
@@ -920,6 +925,7 @@ app.use((err, req, res, next) => {
     res.status(500).send({ message: "Something went wrong", color: "red" });
 });
 
-server.listen(8080, () => {
-    console.log("Server running on port 8080...");
+const PORT = process.env.PORT || 8080;
+server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}...`);
 });
