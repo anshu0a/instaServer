@@ -50,7 +50,7 @@ const { Server } = require('socket.io');
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: ["https://insta-b9i6.onrender.com","http://localhost:5173","https://insta-h26c5ee0e-anshus-projects-270ebc69.vercel.app"],
+        origin: ["https://insta-b9i6.onrender.com", "http://localhost:5173", "https://insta-seven-gamma.vercel.app"],
         methods: ["GET", "POST"],
     },
 });
@@ -114,7 +114,7 @@ cstore.on("error", (err) => {
 
 
 const corsOptions = {
-    origin: ["https://insta-b9i6.onrender.com", "http://localhost:5173","https://insta-h26c5ee0e-anshus-projects-270ebc69.vercel.app"], 
+    origin: ["https://insta-b9i6.onrender.com", "http://localhost:5173", "https://insta-seven-gamma.vercel.app"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -163,20 +163,9 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 // ______________________________________________________middleware _____________________________________________-
 
-app.use((req, res, next) => {
-    console.log("Session Data:", req.session);
-    console.log("User Data:", req.user);
-    next();
-});
-app.get("/check-session", (req, res) => {
-    console.log("Session:", req.session);
-    console.log("User:", req.user);
-    res.send(req.isAuthenticated() ? "Authenticated" : "Not Authenticated");
-});
-
 
 //_______________________________________________________________login _______________________________-
-app.post("/checkUser", loginUser);  
+app.post("/checkUser", loginUser);
 app.post("/askforuserid", askUserinfo);
 //_______________________________________________________________logout _______________________________-
 app.post("/logoutuser", logoutUser);
