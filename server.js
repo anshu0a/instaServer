@@ -50,7 +50,7 @@ const { Server } = require('socket.io');
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: ["https://insta-b9i6.onrender.com", "http://localhost:5173", "https://insta-seven-gamma.vercel.app"],
+        origin: ["https://insta-b9i6.onrender.com", "http://localhost:5173", "https://insta-theta-blond.vercel.app"],
         methods: ["GET", "POST"],
     },
 });
