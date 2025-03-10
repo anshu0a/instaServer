@@ -114,7 +114,11 @@ cstore.on("error", (err) => {
 
 
 const corsOptions = {
-    origin: ["https://insta-b9i6.onrender.com", "http://localhost:5173", "https://insta-seven-gamma.vercel.app"],
+    origin: [
+        "https://insta-b9i6.onrender.com",
+        "http://localhost:5173",
+        "https://insta-seven-gamma.vercel.app"
+    ],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
