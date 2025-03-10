@@ -50,7 +50,7 @@ const { Server } = require('socket.io');
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: ["https://insta-b9i6.onrender.com","http://localhost:5173"],
+        origin: ["https://insta-b9i6.onrender.com","http://localhost:5173","https://insta-hwm2sfzjh-anshus-projects-270ebc69.vercel.app"],
         methods: ["GET", "POST"],
     },
 });
@@ -114,7 +114,7 @@ cstore.on("error", (err) => {
 
 
 const corsOptions = {
-    origin: ["https://insta-b9i6.onrender.com", "http://localhost:5173"], 
+    origin: ["https://insta-b9i6.onrender.com", "http://localhost:5173","https://insta-hwm2sfzjh-anshus-projects-270ebc69.vercel.app"], 
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
