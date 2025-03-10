@@ -907,16 +907,19 @@ setInterval(cleanUpExpiredEntries, 60 * 60 * 1000);
 
 
 //____________________________________________________________last _______________________________-------
+app.use(express.static(path.join(__dirname, "build"))); // Serve static frontend files
 
+// Catch-all route for React (SPA)
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
+// Global error handler (MUST be last middleware)
 app.use((err, req, res, next) => {
     console.error("Server error:", err);
     res.status(500).send({ message: "Something went wrong", color: "red" });
 });
 
-
 server.listen(8080, () => {
     console.log("Server running on port 8080...");
 });
-
-
-
