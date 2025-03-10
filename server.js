@@ -113,7 +113,7 @@ cstore.on("error", (err) => {
 //_______________________________________________________________________________________________________________________
 
 const corsOprtions = {
-    origin: "https://insta-b9i6.onrender.com",
+    origin: "https://insta-anshu0o.netlify.app",
     credentials: true,
 };
 
@@ -121,11 +121,11 @@ const sessionOptions = {
     store: cstore,
     secret: process.env.SECRET,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {
-        secure: false,
+        secure: true,
         httpOnly: true,
-        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        sameSite: "none",
         maxAge: 7 * 24 * 60 * 60 * 1000,
     },
 };
@@ -152,7 +152,7 @@ passport.deserializeUser(User.deserializeUser());
 
 
 //_______________________________________________________________login _______________________________-
-app.post("/checkUser", loginUser);  
+app.post("/checkUser", loginUser);
 app.post("/askforuserid", askUserinfo);
 //_______________________________________________________________logout _______________________________-
 app.post("/logoutuser", logoutUser);
