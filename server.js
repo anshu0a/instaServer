@@ -50,7 +50,7 @@ const { Server } = require('socket.io');
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "https://insta-anshu0o.netlify.app/",
+        origin: "https://insta-anshu0o.netlify.app",
         methods: ["GET", "POST"],
     },
 });
@@ -113,7 +113,7 @@ cstore.on("error", (err) => {
 //_______________________________________________________________________________________________________________________
 
 const corsOprtions = {
-    origin: "https://insta-anshu0o.netlify.app/",
+    origin: "https://insta-anshu0o.netlify.app",
     credentials: true,
 };
 
